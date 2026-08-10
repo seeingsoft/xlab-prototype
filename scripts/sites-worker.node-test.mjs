@@ -1,21 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import worker from "./sites-worker.mjs";
+import worker from "../dist/server/index.js";
 
-test("serves the app shell for the three prototype surfaces and preserves static files", async () => {
-  const seen = [];
-  const env = {
-    ASSETS: {
-      fetch: async (request) => {
-        seen.push(new URL(request.url).pathname);
-        return new Response("ok");
-      },
-    },
-  };
-
+test("serves every public prototype page without a hosting-specific asset binding", async () => {
   for (const path of ["/", "/admin", "/ops", "/acceptance-map.html"]) {
-    await worker.fetch(new Request(`https://example.test${path}`), env);
+    const response = await worker.fetch(new Request(`https://example.test${path}`));
+    assert.equal(response.status, 200);
   }
-
-  assert.deepEqual(seen, ["/index.html", "/index.html", "/index.html", "/acceptance-map.html"]);
 });
