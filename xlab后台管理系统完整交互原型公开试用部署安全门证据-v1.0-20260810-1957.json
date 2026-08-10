@@ -1,0 +1,118 @@
+{
+  "schema_version": "fde-safety-evidence/v1",
+  "task_id": "XLAB-UX0-PUBLIC-ACCEPTANCE-MAP-20260810-001",
+  "change_summary": "为运营管理 Web、运营管理 H5、家庭参与 H5 增加统一的“验收地图”入口；新增公开静态验收地图页和仅提供静态资产的托管路由；已发布纯合成数据的公开试用版本。",
+  "risk_level": "R3",
+  "risk_reason": "本次变更将原型发布到公开互联网。运行内容不含真实身份、儿童资料、数据库、AI Provider、通知或发布渠道，但公开可访问本身属于外部生产暴露。",
+  "sources": [
+    "用户授权：全局“验收地图”入口 + 公开测试链接，授权部署",
+    "PRODUCT.md：UX-0 仅使用合成课程、虚构人物和虚构作品，不连接正式数据库、AI Provider、通知渠道或真实身份系统"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "src/",
+      "public/",
+      "scripts/",
+      ".openai/hosting.json",
+      "package.json",
+      "vite.config.ts"
+    ],
+    "forbidden_paths": [
+      "真实身份、儿童数据、数据库、AI Provider、通知与社媒发布渠道",
+      "任何凭据、环境变量或生产业务代码"
+    ],
+    "non_goals": [
+      "不改变正式 xlab 平台的 E0-A、业务代码授权或验收状态",
+      "不提供账号注册、数据持久化、自动发布或真实外部操作"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "MAP-001",
+      "statement": "家庭参与 H5、运营管理 Web、运营管理 H5 都可通过“验收地图”回到同一个页面。",
+      "check": "Vitest 渲染 /、/admin、/ops，逐一验证可访问链接及其 href。",
+      "evidence": "npm test：29 个测试通过；AdminPrototype.test.tsx 的 keeps one acceptance-map link reachable from every product surface 通过。",
+      "status": "passed"
+    },
+    {
+      "id": "MAP-002",
+      "statement": "公开验收地图可直接访问，并可进入管理台和现场台。",
+      "check": "Node 托管路由测试、生产构建与本地浏览器路径核验。",
+      "evidence": "node --test scripts/sites-worker.node-test.mjs 通过；npm run build 生成 dist/acceptance-map.html 与 dist/server/index.js；隔离浏览器已从 /admin、/ops、/ 进入验收地图。",
+      "status": "passed"
+    },
+    {
+      "id": "SAFE-003",
+      "statement": "公开试用版不携带密钥、真实资料或外部业务能力。",
+      "check": "全目录泄密扫描、依赖审计和源代码数据流复核。",
+      "evidence": "gitleaks detect --source . --no-git --redact：no leaks found；npm 官方 registry audit：found 0 vulnerabilities；源代码仅有本地 React 状态与静态 ASSETS 路由，无数据库、认证、网络请求、自动发布或不安全 HTML 注入。",
+      "status": "passed"
+    },
+    {
+      "id": "DEPLOY-004",
+      "statement": "已按用户授权生成公开试用链接。",
+      "check": "托管服务保存版本、设置 public 访问、发布并查询部署状态。",
+      "evidence": "版本 1 已保存；部署状态 succeeded；公开地址为 https://xlab-prototype-acceptance-map.lemony-jam-3603.chatgpt.site。",
+      "status": "passed"
+    }
+  ],
+  "tests": [
+    {
+      "name": "原型交互回归",
+      "command": "npm test",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "2 个测试文件、29 个测试通过。"
+    },
+    {
+      "name": "公开静态托管路由",
+      "command": "node --test scripts/sites-worker.node-test.mjs",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "验证 /、/admin、/ops 回退至 /index.html，/acceptance-map.html 保持静态文件路径。"
+    },
+    {
+      "name": "生产构建",
+      "command": "npm run build",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "Vite 构建成功，含 dist/acceptance-map.html 与 dist/server/index.js。"
+    },
+    {
+      "name": "泄密与依赖安全",
+      "command": "gitleaks detect --source . --no-git --redact；npm --registry=https://registry.npmjs.org audit --audit-level=high",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "gitleaks no leaks found；npm audit found 0 vulnerabilities。"
+    }
+  ],
+  "security": {
+    "secret_scan": "passed",
+    "security_review": "passed",
+    "evidence": "已复核 React 渲染、表单本地状态与静态 Worker 路由：无 dangerouslySetInnerHTML、eval、命令执行、用户可控远程请求、认证、数据库或真实资料处理。"
+  },
+  "rollback": "如需立即停止公开访问，调用托管服务的 update_site_access，将 project_id appgprj_6a79bb56c1b0819194010f2bf283f80e 改为 custom 且清空非所有者访问；运行版本与本地原型均不含真实数据，因此无需数据回收或迁移。",
+  "approvals": [
+    {
+      "approver": "江（xinyingjiang）",
+      "approved_at": "2026-08-10（会话内明确授权）",
+      "scope": "全局验收地图入口、公开测试链接与部署；仅限纯合成原型。",
+      "decision": "approved"
+    }
+  ],
+  "production_observation": {
+    "status": "not_run",
+    "window": "",
+    "signals": [
+      "托管服务返回 deployment status: succeeded",
+      "公开访问策略为 public"
+    ],
+    "evidence": "部署服务已确认发布成功；独立浏览器的公开网络实测未记录，因此不将此项表述为端到端生产观察。"
+  },
+  "limitations": [
+    "公开地址为原型试用，不是正式产品、业务代码验收或 E0-A 验收。",
+    "页面只使用合成数据；提交动作仅保留在访问者当前浏览器内。",
+    "当前结论不包含独立真实网络访问观察，发布后建议由一位非项目成员用自己的设备走完五步验收。"
+  ],
+  "verdict": "PASS_WITH_LIMITATIONS"
+}
