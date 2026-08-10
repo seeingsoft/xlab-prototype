@@ -1,0 +1,125 @@
+{
+  "schema_version": "fde-safety-evidence/v1",
+  "evidence_version": "v1.1-20260810-2047",
+  "task_id": "XLAB-UX0-PUBLIC-ACCEPTANCE-MAP-20260810-001",
+  "change_summary": "首版公开部署被实际访问发现首页及主要路径返回 404。已改为在构建时将原型静态文件直接封装到公开 Worker，并重新发布；本记录取代 v1.0 对首版部署可用性的判断。",
+  "risk_level": "R3",
+  "risk_reason": "本次变更将纯合成的可交互原型发布到公开互联网。运行内容不含真实身份、儿童资料、数据库、AI Provider、通知或发布渠道，但公开可访问本身属于外部生产暴露。",
+  "sources": [
+    "用户授权：全局验收地图入口 + 公开测试链接，授权部署。",
+    "PRODUCT.md：UX-0 仅使用合成课程、虚构人物和虚构作品，不连接正式数据库、AI Provider、通知渠道或真实身份系统。"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "src/",
+      "public/",
+      "scripts/",
+      ".openai/hosting.json",
+      "package.json",
+      "vite.config.ts"
+    ],
+    "forbidden_paths": [
+      "真实身份、儿童数据、数据库、AI Provider、通知与社媒发布渠道",
+      "任何凭据、环境变量或生产业务代码"
+    ],
+    "non_goals": [
+      "不改变正式 xlab 平台的 E0-A、业务代码授权或验收状态",
+      "不提供账号注册、数据持久化、自动发布或真实外部操作"
+    ]
+  },
+  "root_cause_and_remediation": {
+    "failed_release": "首版 Worker 依赖托管端未提供的静态资源绑定，导致公开请求找不到原型文件。",
+    "remediation": "构建脚本将经过 Vite 构建的 HTML、JS、CSS 与图片嵌入 Worker；首页、管理台与现场 H5 走同一应用壳，验收地图保留独立静态入口。",
+    "fixed_source_commit": "5df7b2ae986a1573bf62441efd62a034d3446a11"
+  },
+  "requirements": [
+    {
+      "id": "MAP-001",
+      "statement": "家庭参与 H5、运营管理 Web、运营管理 H5 都可回到同一验收地图。",
+      "check": "运行 React 交互回归测试，逐一检查各表面中的验收地图入口。",
+      "evidence": "npm test：2 个测试文件、29 个测试通过。",
+      "status": "passed"
+    },
+    {
+      "id": "MAP-002",
+      "statement": "公开地图、首页、管理台和现场 H5 均有可用路由。",
+      "check": "运行生成后的 Worker 路由测试，覆盖 /、/admin、/ops、/acceptance-map.html。",
+      "evidence": "Node 路由测试中四个路径均为 200；生产构建成功。",
+      "status": "passed"
+    },
+    {
+      "id": "DEPLOY-003",
+      "statement": "公开环境可加载验收地图及运行所需的静态资源。",
+      "check": "检查修复后公开 Worker 的真实请求日志，确认页面与 JS、CSS、图片均为 200。",
+      "evidence": "公开 Worker 日志记录 /、/acceptance-map.html、JS、CSS、图片请求均为 HTTP 200；运行脚本版本 ff6dd290-0fb3-47a9-a6b2-05af07abf94f。",
+      "status": "passed"
+    },
+    {
+      "id": "SAFE-004",
+      "statement": "公开试用版不携带密钥、真实资料或外部业务能力。",
+      "check": "执行泄密与依赖安全检查，并检查公开 Worker 的运行边界。",
+      "evidence": "gitleaks no leaks found；npm audit found 0 vulnerabilities；静态 Worker 不处理用户输入、认证、数据库、外部请求或真实资料。",
+      "status": "passed"
+    }
+  ],
+  "tests": [
+    {
+      "name": "原型交互回归",
+      "command": "npm test",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "2 个测试文件、29 个测试通过。"
+    },
+    {
+      "name": "公开 Worker 路由",
+      "command": "node --test scripts/sites-worker.node-test.mjs",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "覆盖 /、/admin、/ops、/acceptance-map.html，均为 200。"
+    },
+    {
+      "name": "生产构建",
+      "command": "npm run build",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "生产构建成功，已生成嵌入静态文件的 Worker。"
+    },
+    {
+      "name": "泄密与依赖安全",
+      "command": "gitleaks detect --source . --no-git --redact；npm --registry=https://registry.npmjs.org audit --audit-level=high",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": "gitleaks no leaks found；npm audit found 0 vulnerabilities。"
+    }
+  ],
+  "security": {
+    "secret_scan": "passed",
+    "security_review": "passed",
+    "evidence": "复核公开 Worker、React 渲染与本地表单状态：无密钥、真实资料、认证、数据库、外部请求、自动发布、dangerouslySetInnerHTML、eval 或命令执行。"
+  },
+  "approvals": [
+    {
+      "approver": "江（xinyingjiang）",
+      "approved_at": "2026-08-10（会话内明确授权）",
+      "scope": "全局验收地图入口、公开测试链接与部署；仅限纯合成原型。",
+      "decision": "approved"
+    }
+  ],
+  "production_observation": {
+    "status": "passed",
+    "window": "2026-08-10 20:4x Asia/Shanghai",
+    "signals": [
+      "公开 Worker 记录首页 / 为 HTTP 200",
+      "公开 Worker 记录 /acceptance-map.html 为 HTTP 200",
+      "公开 Worker 记录 JS、CSS 和原型图片资源均为 HTTP 200"
+    ],
+    "evidence": "已执行：公开 Worker 日志确认修复后的首页、验收地图及所有运行必需静态资源均返回 200。"
+  },
+  "rollback": "如需停止公开试用，将托管项目访问策略从 public 改回受限访问。原型无真实数据、无持久化，无需数据回收。",
+  "limitations": [
+    "这是公开试用原型，不是正式产品，也不表示 E0-A 或任何业务代码已验收。",
+    "管理台与现场 H5 的路由已通过自动测试；本次公开日志的人工观察重点为首页、验收地图和其所需静态资源。",
+    "浏览器可能缓存首版失败页面；验收人应以本次重新打开的公开链接为准。"
+  ],
+  "verdict": "PASS_WITH_LIMITATIONS"
+}
