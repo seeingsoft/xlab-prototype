@@ -19,6 +19,7 @@ import {
   Hand,
   Image,
   Inbox,
+  Info,
   LayoutDashboard,
   ListChecks,
   Menu,
@@ -42,6 +43,7 @@ import {
   IntentWorkbench,
   MobileExplorationReview,
 } from "./AdminV22Modules";
+import { HelpPanel } from "./HelpPanel";
 import "./admin.css";
 
 type AdminView =
@@ -59,7 +61,8 @@ type AdminView =
   | "explore"
   | "approvals"
   | "agents"
-  | "audit";
+  | "audit"
+  | "help";
 type WorkspaceTab = "总览" | "任务" | "参与者" | "交付物" | "时间线";
 type CourseDraft = { name: string; teacher: string; time: string };
 type VolunteerTask = { title: string; owner: string; backup: string; status: string };
@@ -106,6 +109,7 @@ const navItems = [
   ["待批准", "approvals", Inbox],
   ["Agent 协作", "agents", Bot],
   ["审计与设置", "audit", ShieldCheck],
+  ["使用说明", "help", Info],
 ] as const;
 
 function DirectionContract() {
@@ -420,7 +424,7 @@ function AgentsPage() {
 
 export function AdminPrototype() {
   const [view, setView] = useState<AdminView>("dashboard"); const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>("总览"); const [courses, setCourses] = useState<CourseDraft[]>([]); const [tasks, setTasks] = useState<VolunteerTask[]>(initialTasks); const [toast, setToast] = useState("");
-  const title = useMemo(() => ({ dashboard: "运营看板", courses: "课程管理", workspace: "课程管理", "new-course": "课程管理", tasks: "志愿协作", "new-task": "志愿协作", people: "参与者", iam: "人员与权限", checkin: "现场执行", media: "内容运营", works: "作品展厅", explore: "探索编辑部", approvals: "待批准", agents: "Agent 协作", audit: "审计与设置" }[view]), [view]);
+  const title = useMemo(() => ({ dashboard: "运营看板", courses: "课程管理", workspace: "课程管理", "new-course": "课程管理", tasks: "志愿协作", "new-task": "志愿协作", people: "参与者", iam: "人员与权限", checkin: "现场执行", media: "内容运营", works: "作品展厅", explore: "探索编辑部", approvals: "待批准", agents: "Agent 协作", audit: "审计与设置", help: "使用说明" }[view]), [view]);
   function navigate(next: AdminView) { setView(next); setToast(""); window.scrollTo({ top: 0, behavior: "auto" }); }
   let content: React.ReactNode;
   if (view === "dashboard") content = <Dashboard onNavigate={navigate} />;
@@ -437,21 +441,22 @@ export function AdminPrototype() {
   else if (view === "explore") content = <ExplorationEditorialPage />;
   else if (view === "approvals") content = <ApprovalsPage />;
   else if (view === "agents") content = <AgentsPage />;
+  else if (view === "help") content = <HelpPanel scope="admin" />;
   else content = <AuditSettingsPage />;
   return <div className="admin-app"><DirectionContract /><AdminSidebar view={view} onNavigate={navigate} /><div className="admin-main"><AdminHeader title={title} onNewCourse={() => navigate("new-course")} />{toast ? <div className="toast" role="status"><CheckCircle2 size={18} /> {toast}<button type="button" aria-label="关闭提示" onClick={() => setToast("")}><X size={17} /></button></div> : null}<main id="main-content">{content}</main></div></div>;
 }
 
-type MobileScreen = "home" | "checkin" | "task" | "receipt" | "approval" | "pack" | "explore";
+type MobileScreen = "home" | "checkin" | "task" | "receipt" | "approval" | "pack" | "explore" | "help";
 
 function MobileHeader({ title, onBack }: { title: string; onBack?: () => void }) {
   return <header className="mobile-header">{onBack ? <button type="button" onClick={onBack} aria-label="返回今日行动"><ArrowLeft /></button> : <button type="button" aria-label="打开导航，原型暂未开放" disabled title="原型暂未开放"><Menu /></button>}<strong>{title}</strong><a className="mobile-map-entry" href={`${import.meta.env.BASE_URL}acceptance-map.html`}>验收地图</a></header>;
 }
 
 function MobileHome({ onNavigate }: { onNavigate: (screen: MobileScreen) => void }) {
-  return <><MobileHeader title="xlab 现场" /><main id="main-content" className="mobile-main"><div className="mobile-mode"><FlaskConical size={16} /><span>运营管理 H5</span><small>· 志愿者视图 · 合成数据</small></div><h1>今天先处理 5 件事</h1><p className="mobile-lead">一次只处理一个现场动作，需要判断的事项会保留给人。</p><section className="mobile-course-card"><div><StatusTag tone="purple">今天 14:00</StatusTag><h2>{activeCourse.name}</h2><p>林老师（合成示例） · 已报名 18 / 24</p></div><span className="course-symbol"><Gamepad2 /></span></section><section className="action-queue" aria-label="今日行动"><button type="button" aria-label="进入现场签到" onClick={() => onNavigate("checkin")}><span className="action-icon blue"><UserCheck /></span><span><strong>现场签到</strong><small>14:00 前 · 核对 4 条演示名单</small></span><StatusTag tone="blue">优先</StatusTag><ChevronRight /></button><button type="button" aria-label="查看志愿任务" onClick={() => onNavigate("task")}><span className="action-icon purple"><ClipboardCheck /></span><span><strong>摆放设备与创作物料</strong><small>预计 30 分钟 · 有备份与求助人</small></span><StatusTag tone="yellow">待完成</StatusTag><ChevronRight /></button><button type="button" aria-label="快速审核探索报" onClick={() => onNavigate("explore")}><span className="action-icon purple"><Newspaper /></span><span><strong>快速审核探索报</strong><small>黄类候选 · 只复核 3 个问题</small></span><StatusTag tone="yellow">待复核</StatusTag><ChevronRight /></button><button type="button" aria-label="审核传播草稿" onClick={() => onNavigate("approval")}><span className="action-icon yellow"><FileText /></span><span><strong>审核传播草稿</strong><small>AI 草稿 · 不会自动发布</small></span><StatusTag tone="yellow">待确认</StatusTag><ChevronRight /></button><button type="button" aria-label="查看老师教学包" onClick={() => onNavigate("pack")}><span className="action-icon green"><FileCheck2 /></span><span><strong>查看老师教学包</strong><small>流程、物料、安全与反馈模板</small></span><StatusTag tone="green">已就绪</StatusTag><ChevronRight /></button></section><aside className="mobile-safety"><ShieldCheck /><span><strong>原型不会产生真实外发</strong><small>签到、任务回执和审批只在当前页面模拟。</small></span></aside></main><MobileNav onNavigate={onNavigate} /></>;
+  return <><MobileHeader title="xlab 现场" /><main id="main-content" className="mobile-main"><div className="mobile-mode"><FlaskConical size={16} /><span>运营管理 H5</span><small>· 志愿者视图 · 合成数据</small></div><h1>今天先处理 5 件事</h1><p className="mobile-lead">一次只处理一个现场动作，需要判断的事项会保留给人。</p><section className="mobile-course-card"><div><StatusTag tone="purple">今天 14:00</StatusTag><h2>{activeCourse.name}</h2><p>林老师（合成示例） · 已报名 18 / 24</p></div><span className="course-symbol"><Gamepad2 /></span></section><section className="action-queue" aria-label="今日行动"><button type="button" aria-label="进入现场签到" onClick={() => onNavigate("checkin")}><span className="action-icon blue"><UserCheck /></span><span><strong>现场签到</strong><small>14:00 前 · 核对 4 条演示名单</small></span><StatusTag tone="blue">优先</StatusTag><ChevronRight /></button><button type="button" aria-label="查看志愿任务" onClick={() => onNavigate("task")}><span className="action-icon purple"><ClipboardCheck /></span><span><strong>摆放设备与创作物料</strong><small>预计 30 分钟 · 有备份与求助人</small></span><StatusTag tone="yellow">待完成</StatusTag><ChevronRight /></button><button type="button" aria-label="快速审核探索报" onClick={() => onNavigate("explore")}><span className="action-icon purple"><Newspaper /></span><span><strong>快速审核探索报</strong><small>黄类候选 · 只复核 3 个问题</small></span><StatusTag tone="yellow">待复核</StatusTag><ChevronRight /></button><button type="button" aria-label="审核传播草稿" onClick={() => onNavigate("approval")}><span className="action-icon yellow"><FileText /></span><span><strong>审核传播草稿</strong><small>AI 草稿 · 不会自动发布</small></span><StatusTag tone="yellow">待确认</StatusTag><ChevronRight /></button><button type="button" aria-label="查看老师教学包" onClick={() => onNavigate("pack")}><span className="action-icon green"><FileCheck2 /></span><span><strong>查看老师教学包</strong><small>流程、物料、安全与反馈模板</small></span><StatusTag tone="green">已就绪</StatusTag><ChevronRight /></button></section><aside className="mobile-safety"><ShieldCheck /><span><strong>原型不会产生真实外发</strong><small>签到、任务回执和审批只在当前页面模拟。</small></span></aside></main><MobileNav screen="home" onNavigate={onNavigate} /></>;
 }
 
-function MobileNav({ onNavigate }: { onNavigate: (screen: MobileScreen) => void }) { return <nav className="mobile-bottom-nav" aria-label="运营 H5 主导航"><button className="active" type="button" onClick={() => onNavigate("home")}><LayoutDashboard /><span>行动</span></button><button type="button" onClick={() => onNavigate("pack")}><CalendarDays /><span>课程</span></button><button type="button" onClick={() => onNavigate("task")}><ListChecks /><span>任务</span></button><button type="button" onClick={() => onNavigate("approval")}><Inbox /><span>待决定</span></button></nav>; }
+function MobileNav({ screen, onNavigate }: { screen: MobileScreen; onNavigate: (screen: MobileScreen) => void }) { return <nav className="mobile-bottom-nav" aria-label="运营 H5 主导航"><button className={screen === "home" ? "active" : ""} type="button" onClick={() => onNavigate("home")}><LayoutDashboard /><span>行动</span></button><button className={screen === "pack" ? "active" : ""} type="button" onClick={() => onNavigate("pack")}><CalendarDays /><span>课程</span></button><button className={screen === "task" ? "active" : ""} type="button" onClick={() => onNavigate("task")}><ListChecks /><span>任务</span></button><button className={screen === "approval" ? "active" : ""} type="button" onClick={() => onNavigate("approval")}><Inbox /><span>待决定</span></button><button className={screen === "help" ? "active" : ""} type="button" onClick={() => onNavigate("help")}><Info /><span>帮助</span></button></nav>; }
 
 function MobileCheckin({ onBack }: { onBack: () => void }) {
   const [checked, setChecked] = useState<string[]>([]); const [message, setMessage] = useState(""); const [pendingCorrection, setPendingCorrection] = useState(""); const [reason, setReason] = useState(""); const [error, setError] = useState("");
@@ -484,6 +489,7 @@ export function OperationsMobilePrototype() {
   else if (screen === "receipt") content = <MobileReceipt onHome={() => setScreen("home")} />;
   else if (screen === "approval") content = <MobileApproval onBack={() => setScreen("home")} />;
   else if (screen === "explore") content = <MobileExplorationReview onBack={() => setScreen("home")} />;
+  else if (screen === "help") content = <><MobileHeader title="使用说明" onBack={() => setScreen("home")} /><main id="main-content"><HelpPanel scope="ops" /></main><MobileNav screen="help" onNavigate={setScreen} /></>;
   else content = <MobilePack onBack={() => setScreen("home")} />;
   return <div className="ops-mobile"><DirectionContract />{content}</div>;
 }

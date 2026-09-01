@@ -219,3 +219,35 @@ p { line-height: 1.62; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ===== 使用说明（帮助 tab）===== */
+.help-page { max-width: 780px; margin: 0 auto; padding: 28px 20px 48px; }
+.help-title { margin: 0 0 18px; font-size: clamp(1.7rem, 5vw, 2.4rem); font-weight: 900; letter-spacing: -0.03em; }
+.help-notice { margin: 0 0 20px; padding: 14px 16px; color: var(--purple-dark); background: var(--purple-soft); border: 2px solid #c7bff1; border-radius: 14px; font-size: .95rem; font-weight: 700; line-height: 1.6; }
+.help-section { margin-top: 26px; }
+.help-section h2 { margin: 0 0 8px; font-size: 1.35rem; font-weight: 900; }
+.help-section > p { margin: 0 0 12px; color: var(--muted); line-height: 1.7; }
+.help-table { overflow: hidden; border: 2px solid var(--ink); border-radius: 16px; }
+.help-table-head, .help-table-row { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 10px; padding: 12px 14px; align-items: center; }
+.help-table-head { color: #fff; background: var(--purple); font-size: .86rem; font-weight: 900; }
+.help-table-row { box-shadow: inset 0 -2px 0 var(--line); font-size: .92rem; }
+.help-table-row.current { background: #fffbe8; box-shadow: inset 4px 0 0 var(--purple), inset 0 -2px 0 var(--line); }
+.help-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.help-steps > li { position: relative; margin-top: 14px; padding: 16px 16px 16px 58px; background: var(--surface); border: 2px solid var(--line); border-radius: 16px; counter-increment: step; }
+.help-steps > li::before { position: absolute; left: 14px; top: 16px; display: grid; width: 32px; height: 32px; place-items: center; color: #fff; background: var(--purple); border-radius: 50%; content: counter(step); font-weight: 900; }
+.help-steps h3 { margin: 0 0 6px; font-size: 1.08rem; font-weight: 900; }
+.help-steps p { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.7; }
+.help-takeaway { margin-top: 14px; padding: 12px 14px; color: var(--purple-dark); background: var(--purple-soft); border-radius: 12px; font-size: .95rem; line-height: 1.6; }
+.help-faq { margin: 0; padding: 0; list-style: none; }
+.help-faq li { padding: 14px 0; box-shadow: inset 0 -2px 0 var(--line); }
+.help-faq li:last-child { box-shadow: none; }
+.help-faq strong { display: block; margin-bottom: 4px; font-size: 1rem; font-weight: 900; }
+.help-faq span { color: var(--muted); font-size: .93rem; line-height: 1.7; }
+.help-summary { margin-top: 26px; padding: 18px; color: #fff; background: var(--purple); border-radius: 18px; }
+.help-summary h2 { margin: 0 0 8px; font-size: 1.2rem; font-weight: 900; }
+.help-summary p { margin: 0; color: #ece9fb; font-size: .98rem; line-height: 1.7; }
+.help-summary strong { color: #fff; }
+@media (max-width: 640px) {
+  .help-table-head, .help-table-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; }
+  .help-table-head span + span { display: none; }
+}

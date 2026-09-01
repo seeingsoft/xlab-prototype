@@ -59,3 +59,17 @@
 | 资源 `/xlab-prototype/assets/*` | 全部 200 |
 
 `npm test`：2 个测试文件、29 个测试通过。
+
+## 修订 v1.2（2026-09-01）：三端嵌入"使用说明"帮助 tab
+
+按江确认的《xlab原型使用说明-面向家长与运营-v0.1》内容，以 tab 形式嵌入三个端（gh-pages commit `5af4336`）：
+
+| 端 | 入口位置 | 显示内容 |
+|---|---|---|
+| 家庭端 `/` | 底部导航第 4 个 tab"帮助" | 三入口表 + 家长和小朋友章节 + FAQ + 总结 |
+| 运营 Web `/admin/` | 左侧导航新增"使用说明"项 | 三入口表 + 管理运营人员章节（6 步）+ FAQ + 总结 |
+| 运营 H5 `/ops/` | 底部导航新增"帮助"tab | 三入口表 + 现场运营人员章节（4 步）+ FAQ + 总结 |
+
+实现：新增共享组件 `src/HelpPanel.tsx`（按 scope 渲染对应章节），样式 `.help-*` 同时加入 `styles.css` 与 `admin.css`；运营 H5 底部导航 active 高亮由写死改为按当前 screen 判断。
+
+验证（Playwright + Chrome，本地 preview 与线上 GitHub Pages 双测）：三端 help 均正常渲染、导航高亮正确、无 JS 错误；手机端表格单列无横向滚动；`npm test` 29 个测试通过。

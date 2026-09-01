@@ -14,6 +14,7 @@ import {
   Gamepad2,
   Gift,
   Image,
+  Info,
   Lightbulb,
   Rocket,
   ShieldCheck,
@@ -22,9 +23,10 @@ import {
   Users,
 } from "lucide-react";
 import { AdminPrototype, OperationsMobilePrototype } from "./AdminPrototype";
+import { HelpPanel } from "./HelpPanel";
 import "./styles.css";
 
-type Screen = "discover" | "detail" | "register" | "success" | "showcase" | "profile";
+type Screen = "discover" | "detail" | "register" | "success" | "showcase" | "profile" | "help";
 
 const creationSteps = [
   { title: "认识任务", detail: "看懂小游戏目标和示例", icon: Lightbulb },
@@ -74,6 +76,7 @@ function BottomNav({ screen, onChange }: { screen: Screen; onChange: (next: Scre
     { label: "课程", target: "discover" as const, icon: BookOpen },
     { label: "作品", target: "showcase" as const, icon: Image },
     { label: "我的", target: "profile" as const, icon: UserRound },
+    { label: "帮助", target: "help" as const, icon: Info },
   ];
 
   return (
@@ -364,8 +367,9 @@ function FamilyPrototype() {
         {screen === "success" ? <Success values={registration} onHome={() => navigate("discover")} /> : null}
         {screen === "showcase" ? <Showcase /> : null}
         {screen === "profile" ? <Profile /> : null}
+        {screen === "help" ? <HelpPanel scope="family" /> : null}
       </main>
-      {["discover", "showcase", "profile"].includes(screen) ? <BottomNav screen={screen} onChange={navigate} /> : null}
+      {["discover", "showcase", "profile", "help"].includes(screen) ? <BottomNav screen={screen} onChange={navigate} /> : null}
       <p className="live-message" aria-live="polite">当前页面：{screen}</p>
     </div>
   );
