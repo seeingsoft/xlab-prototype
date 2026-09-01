@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="xlab-prototype-version" content="xlab后台管理系统完整交互原型-v1.0-20260810-1640" />
+    <title>xlab 一页极速验收地图</title>
+    <style>
+      :root { --purple:#5b4bc4; --deep:#4433a8; --blue:#087ea4; --green:#287a4d; --green-soft:#e8f7ef; --coral:#a72f45; --coral-soft:#fff0f2; --ink:#1e293b; --muted:#5c677d; --canvas:#f7f9ff; --line:#dce2f2; }
+      * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--canvas); font-family:ui-rounded,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+      main { max-width:880px; margin:0 auto; padding:28px 20px 36px; } h1,h2,p { margin:0; } h1 { font-size:clamp(2.2rem,8vw,4.5rem); line-height:1; letter-spacing:-.04em; font-weight:900; }
+      .lead { margin-top:12px; color:var(--muted); font-size:clamp(1rem,3vw,1.35rem); font-weight:700; }.open { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:24px 0 28px; }
+      .open a { display:block; min-height:58px; padding:16px; color:#fff; background:var(--purple); border-radius:14px; box-shadow:0 4px 0 var(--deep); text-align:center; text-decoration:none; font-weight:900; }
+      a:focus-visible { outline:4px solid var(--blue); outline-offset:3px; }.roles { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }.roles span { padding:8px 11px; background:#fff; border:2px solid var(--line); border-radius:999px; font-weight:800; }.roles b { color:var(--purple); }
+      .path { box-shadow:inset 0 3px 0 var(--ink); }.step { display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:14px; align-items:center; padding:18px 0; box-shadow:inset 0 -3px 0 var(--ink); }.number { display:grid; width:50px; height:50px; place-items:center; color:#fff; background:var(--purple); border-radius:50%; box-shadow:0 4px 0 var(--deep); font-size:1.55rem; font-weight:900; }.step h2 { font-size:clamp(1.35rem,4vw,2rem); line-height:1.1; font-weight:900; }.step p { margin-top:4px; color:var(--muted); font-size:clamp(1rem,3vw,1.2rem); font-weight:700; }.step a { color:inherit; text-decoration:none; }.pass { padding:8px 11px; color:var(--green); background:var(--green-soft); border-radius:999px; white-space:nowrap; font-weight:900; }
+      .stop { margin:28px 0; padding:20px; color:var(--coral); background:var(--coral-soft); border:3px solid var(--coral); border-radius:16px; }.stop h2 { font-size:clamp(1.35rem,4vw,2rem); font-weight:900; }.stop p { margin-top:6px; color:var(--ink); font-size:clamp(1rem,3vw,1.2rem); font-weight:800; }.result { padding-top:8px; text-align:center; }.result h2 { font-size:clamp(1.65rem,5vw,2.6rem); font-weight:900; }.result p,.tiny { margin-top:8px; color:var(--muted); font-weight:700; }.green { color:var(--green); }.tiny { margin-top:18px; font-size:.9rem; text-align:center; }
+      @media (max-width:520px) { main { padding:22px 16px 30px; }.open { grid-template-columns:1fr; }.step { grid-template-columns:50px 1fr; gap:12px; }.pass { grid-column:2; justify-self:start; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>只验 5 件事</h1>
+      <p class="lead">看得懂 · 不会乱发 · 孩子安全</p>
+      <div class="open" aria-label="打开原型"><a href="/admin">电脑：管理台</a><a href="/ops">手机：现场台</a></div>
+      <div class="roles" aria-label="角色和需要验收的步骤"><span><b>家委</b>：1 2 4 5</span><span><b>老师</b>：看教学包</span><span><b>志愿者</b>：3</span><span><b>家长</b>：看课程、选范围</span></div>
+      <section class="path" aria-label="五步验收路线">
+        <article class="step"><span class="number">1</span><a href="/admin"><h2>开课</h2><p>少了 名字 / 老师 / 时间 → 不能存</p></a><span class="pass">对</span></article>
+        <article class="step"><span class="number">2</span><a href="/admin"><h2>找人做事</h2><p>每个任务要有 主责 + 备份</p></a><span class="pass">对</span></article>
+        <article class="step"><span class="number">3</span><a href="/ops"><h2>现场签到</h2><p>改签到 → 必须说原因</p></a><span class="pass">对</span></article>
+        <article class="step"><span class="number">4</span><a href="/admin"><h2>看 AI 文案</h2><p>只能 确认 / 退回 → 不会自己发</p></a><span class="pass">对</span></article>
+        <article class="step"><span class="number">5</span><a href="/admin"><h2>看孩子作品</h2><p>没授权 → 不能公开</p></a><span class="pass">对</span></article>
+      </section>
+      <section class="stop" aria-label="必须禁止的行为"><h2>只要看到这 3 件事，直接判不通过</h2><p>系统自己发布 · 系统自己授权 · 不写原因就能改重要事情</p></section>
+      <section class="result"><h2><span class="green">5 个“对”</span> = 可以继续试用</h2><p>有一个看不懂、怕点错、觉得不安全 → 直接说出来</p></section>
+      <p class="tiny">这是合成原型。怎么点都不会真的发消息、公开作品或保存真实资料。</p>
+    </main>
+  </body>
+</html>
