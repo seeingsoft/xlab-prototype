@@ -364,3 +364,9 @@
   .help-table-head, .help-table-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; }
   .help-table-head span + span { display: none; }
 }
+
+/* ===== 顶栏"使用说明"入口（运营 H5）===== */
+.mobile-header { grid-template-columns: 48px 1fr auto; }
+.mobile-header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.mobile-header .mobile-help-entry { display: inline-flex; width: auto; gap: 3px; padding: 0 8px; color: var(--ops-purple-deep); background: transparent; border: 0; border-radius: 10px; font-size: .78rem; font-weight: 900; }
+.mobile-header .mobile-help-entry:focus-visible { outline: 3px solid var(--ops-blue); outline-offset: -3px; }

@@ -41,13 +41,14 @@ const roles = [
   ["体验与测试", "试玩、找问题、提出改进", Gamepad2],
 ] as const;
 
-function Header({ onHome }: { onHome: () => void }) {
+function Header({ onHome, onHelp }: { onHome: () => void; onHelp: () => void }) {
   return (
     <header className="site-header">
       <button className="wordmark" type="button" onClick={onHome} aria-label="返回课程首页">
         xlab
       </button>
       <div className="header-actions">
+        <button className="family-help-entry" type="button" onClick={onHelp}><Info size={16} aria-hidden="true" /> 使用说明</button>
         <a className="family-map-entry" href={`${import.meta.env.BASE_URL}acceptance-map.html`}>验收地图</a>
         <div className="mode-chip"><Users size={18} aria-hidden="true" /> 家庭参与端 H5</div>
       </div>
@@ -76,7 +77,6 @@ function BottomNav({ screen, onChange }: { screen: Screen; onChange: (next: Scre
     { label: "课程", target: "discover" as const, icon: BookOpen },
     { label: "作品", target: "showcase" as const, icon: Image },
     { label: "我的", target: "profile" as const, icon: UserRound },
-    { label: "帮助", target: "help" as const, icon: Info },
   ];
 
   return (
@@ -359,7 +359,7 @@ function FamilyPrototype() {
 
   return (
     <div className="app-shell">
-      <Header onHome={() => navigate("discover")} />
+      <Header onHome={() => navigate("discover")} onHelp={() => navigate("help")} />
       <main id="main-content" ref={mainRef} tabIndex={-1}>
         {screen === "discover" ? <Discover onOpen={() => navigate("detail")} /> : null}
         {screen === "detail" ? <CourseDetail onBack={() => navigate("discover")} onRegister={() => navigate("register")} /> : null}

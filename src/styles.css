@@ -251,3 +251,8 @@ p { line-height: 1.62; }
   .help-table-head, .help-table-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; }
   .help-table-head span + span { display: none; }
 }
+
+/* ===== 顶栏"使用说明"入口（家庭端）===== */
+.family-help-entry { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 5px; padding: 0 12px; color: var(--purple-dark); background: var(--surface); border: 2px solid var(--line); border-radius: 12px; font-size: .86rem; font-weight: 900; cursor: pointer; }
+.family-help-entry:hover { border-color: #c7bff1; }
+.family-help-entry:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }

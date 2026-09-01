@@ -73,3 +73,17 @@
 实现：新增共享组件 `src/HelpPanel.tsx`（按 scope 渲染对应章节），样式 `.help-*` 同时加入 `styles.css` 与 `admin.css`；运营 H5 底部导航 active 高亮由写死改为按当前 screen 判断。
 
 验证（Playwright + Chrome，本地 preview 与线上 GitHub Pages 双测）：三端 help 均正常渲染、导航高亮正确、无 JS 错误；手机端表格单列无横向滚动；`npm test` 29 个测试通过。
+
+## 修订 v1.3（2026-09-01）：入口移至顶栏并统一更名为"使用说明"
+
+按江确认：三端入口从底部/侧边导航移至顶栏，"帮助"更名为"使用说明"（gh-pages commit `40340ec`）：
+
+| 端 | 入口位置 |
+|---|---|
+| 家庭端 `/` | 顶栏（xlab logo 右侧），点击进入帮助页；底部导航恢复 3 个 tab |
+| 运营 Web `/admin/` | 顶栏（验收地图旁、新建课程前），点击进入帮助页；侧边导航恢复 12 项 |
+| 运营 H5 `/ops/` | 顶栏（"验收地图"旁），点击进入帮助页；底部导航恢复 4 个 tab |
+
+实现：`Header`（家庭端）新增"使用说明"按钮；`AdminHeader`（运营 Web）新增 onHelp 按钮；`MobileHeader`（运营 H5）新增可选 onHelp 按钮与右侧 action 容器；文案统一为"使用说明"。
+
+验证（本地 + 线上 GitHub Pages 实测）：三端顶栏入口均正常进入帮助页、旧位置无残留入口、无 JS 错误；`npm test` 29 个测试通过。
