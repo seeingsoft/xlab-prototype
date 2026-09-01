@@ -46,7 +46,7 @@ function Header({ onHome }: { onHome: () => void }) {
         xlab
       </button>
       <div className="header-actions">
-        <a className="family-map-entry" href="/acceptance-map.html">验收地图</a>
+        <a className="family-map-entry" href={`${import.meta.env.BASE_URL}acceptance-map.html`}>验收地图</a>
         <div className="mode-chip"><Users size={18} aria-hidden="true" /> 家庭参与端 H5</div>
       </div>
     </header>
@@ -121,7 +121,7 @@ function Discover({ onOpen }: { onOpen: () => void }) {
         </div>
 
         <div className="course-stage" aria-hidden="true">
-          <img src="/assets/xlab-companion.png" alt="" className="companion" />
+          <img src={`${import.meta.env.BASE_URL}assets/xlab-companion.png`} alt="" className="companion" />
           <GamePreview />
         </div>
       </article>
@@ -372,7 +372,8 @@ function FamilyPrototype() {
 }
 
 export default function App() {
-  if (window.location.pathname.startsWith("/admin")) return <AdminPrototype />;
-  if (window.location.pathname.startsWith("/ops")) return <OperationsMobilePrototype />;
+  const segments = window.location.pathname.split("/");
+  if (segments.includes("admin")) return <AdminPrototype />;
+  if (segments.includes("ops")) return <OperationsMobilePrototype />;
   return <FamilyPrototype />;
 }

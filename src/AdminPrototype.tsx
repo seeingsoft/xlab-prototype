@@ -153,7 +153,7 @@ function AdminHeader({ title, onNewCourse }: { title: string; onNewCourse: () =>
       <div className="topbar-actions">
         <label className="search-box" title="原型暂未开放"><Search size={18} aria-hidden="true" /><span className="sr-only">搜索（原型暂未开放）</span><input disabled placeholder="搜索课程、任务、参与者（原型暂未开放）" /></label>
         <button className="icon-button" type="button" aria-label="打开消息，原型暂未开放" disabled title="原型暂未开放"><MessageSquareText size={20} /></button>
-        <a className="ops-secondary compact ops-map-entry" href="/acceptance-map.html">验收地图</a>
+        <a className="ops-secondary compact ops-map-entry" href={`${import.meta.env.BASE_URL}acceptance-map.html`}>验收地图</a>
         <button className="ops-primary compact" type="button" onClick={onNewCourse}><Plus size={18} /> 新建课程</button>
       </div>
     </header>
@@ -444,7 +444,7 @@ export function AdminPrototype() {
 type MobileScreen = "home" | "checkin" | "task" | "receipt" | "approval" | "pack" | "explore";
 
 function MobileHeader({ title, onBack }: { title: string; onBack?: () => void }) {
-  return <header className="mobile-header">{onBack ? <button type="button" onClick={onBack} aria-label="返回今日行动"><ArrowLeft /></button> : <button type="button" aria-label="打开导航，原型暂未开放" disabled title="原型暂未开放"><Menu /></button>}<strong>{title}</strong><a className="mobile-map-entry" href="/acceptance-map.html">验收地图</a></header>;
+  return <header className="mobile-header">{onBack ? <button type="button" onClick={onBack} aria-label="返回今日行动"><ArrowLeft /></button> : <button type="button" aria-label="打开导航，原型暂未开放" disabled title="原型暂未开放"><Menu /></button>}<strong>{title}</strong><a className="mobile-map-entry" href={`${import.meta.env.BASE_URL}acceptance-map.html`}>验收地图</a></header>;
 }
 
 function MobileHome({ onNavigate }: { onNavigate: (screen: MobileScreen) => void }) {
